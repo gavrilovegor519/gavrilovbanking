@@ -1,0 +1,12 @@
+{"properties": [
+  {
+    "name": "com.egor.jwtSecret",
+    "type": "java.lang.String",
+    "description": "JWT Secret code."
+  },
+  {
+    "name": "com.egor.jwtExpirationMs",
+    "type": "java.lang.Integer",
+    "description": "JWT expiration time."
+  }
+]}

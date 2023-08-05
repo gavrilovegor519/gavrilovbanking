@@ -1,9 +1,8 @@
 package com.egor.gavrilovbanking.service;
 
-import com.egor.gavrilovbanking.entity.User;
-
 public interface BankingService {
-    void addMoney(long amount, User user);
-    void getMoney(long amount, User user);
-    void transferMoney(long amount, User sender, User getter);
+    void addMoney(long amount, String username);
+    void getMoney(long amount, String username);
+    void transferMoney(long amount, String sender, String getter);
+    long getBalance(String username);
 }

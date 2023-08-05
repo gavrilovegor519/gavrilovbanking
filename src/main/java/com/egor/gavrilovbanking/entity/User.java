@@ -47,8 +47,10 @@ public class User implements UserDetails {
     private String email;
 
     @Column(name = "tel", unique = true)
-    @Size(max = 12)
     private long tel;
+
+    @Column(name = "amountOfMoney")
+    private long amountOfMoney;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(  name = "user_roles", 

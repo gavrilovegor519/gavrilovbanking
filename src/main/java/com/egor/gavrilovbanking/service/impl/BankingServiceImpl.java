@@ -1,5 +1,6 @@
 package com.egor.gavrilovbanking.service.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -7,13 +8,9 @@ import com.egor.gavrilovbanking.entity.User;
 import com.egor.gavrilovbanking.repo.UserRepo;
 import com.egor.gavrilovbanking.service.BankingService;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-
 @Service
-@AllArgsConstructor
-@NoArgsConstructor
 public class BankingServiceImpl implements BankingService {
+    @Autowired
     private UserRepo userRepo;
 
     @Override

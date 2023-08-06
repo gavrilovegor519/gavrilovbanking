@@ -6,11 +6,12 @@ import com.egor.gavrilovbanking.enums.RoleEnum;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Entity
@@ -22,7 +23,7 @@ public class Role implements GrantedAuthority {
     private Long id;
 
     @Column(name = "name")
-    @NotBlank
+    @Enumerated(EnumType.STRING)
     private RoleEnum role;
 
     @Override

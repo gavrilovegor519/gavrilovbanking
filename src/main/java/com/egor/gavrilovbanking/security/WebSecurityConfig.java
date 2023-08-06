@@ -1,5 +1,6 @@
 package com.egor.gavrilovbanking.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,19 +13,18 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
+import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 import com.egor.gavrilovbanking.enums.RoleEnum;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-
 @Configuration
 @EnableMethodSecurity
-@AllArgsConstructor
-@NoArgsConstructor
 public class WebSecurityConfig {
+    @Autowired
     private UserDetailsServiceImpl userDetailsService;
 
+    @Autowired
     private AuthEntryPointJwt unauthorizedHandler;
 
     @Bean
@@ -53,15 +53,20 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    MvcRequestMatcher.Builder mvc(HandlerMappingIntrospector introspector) {
+        return new MvcRequestMatcher.Builder(introspector);
+    }
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http, MvcRequestMatcher.Builder mvc) throws Exception {
         http.csrf(csrf -> csrf.disable())
             .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> 
-                auth.requestMatchers("/api/auth/**").permitAll()
-                    .requestMatchers("/api/banking/**").hasAnyAuthority(RoleEnum.USER.toString())
-                    .requestMatchers("/api/staff/**").hasAnyAuthority(RoleEnum.STAFF.toString())
-                    .requestMatchers("/api/admin/**").hasAnyAuthority(RoleEnum.ADMIN.toString())
+                auth.requestMatchers(mvc.pattern("/api/auth/**")).permitAll()
+                    .requestMatchers(mvc.pattern("/api/banking/**")).hasAnyAuthority(RoleEnum.USER.toString())
+                    .requestMatchers(mvc.pattern("/api/staff/**")).hasAnyAuthority(RoleEnum.STAFF.toString())
+                    .requestMatchers(mvc.pattern("/api/admin/**")).hasAnyAuthority(RoleEnum.ADMIN.toString())
                     .anyRequest().permitAll()
             );
         

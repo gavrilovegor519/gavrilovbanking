@@ -1,5 +1,6 @@
 package com.egor.gavrilovbanking.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -9,13 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.egor.gavrilovbanking.entity.User;
 import com.egor.gavrilovbanking.repo.UserRepo;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-
 @Service
-@AllArgsConstructor
-@NoArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
+    @Autowired
     private UserRepo userRepository;
 
     @Override

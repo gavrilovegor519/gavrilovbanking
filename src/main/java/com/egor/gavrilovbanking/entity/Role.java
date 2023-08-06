@@ -2,12 +2,8 @@ package com.egor.gavrilovbanking.entity;
 
 import org.springframework.security.core.GrantedAuthority;
 
-import com.egor.gavrilovbanking.enums.RoleEnum;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -23,11 +19,10 @@ public class Role implements GrantedAuthority {
     private Long id;
 
     @Column(name = "name")
-    @Enumerated(EnumType.STRING)
-    private RoleEnum role;
+    private String name;
 
     @Override
     public String getAuthority() {
-        return role.toString();
+        return name;
     }
 }

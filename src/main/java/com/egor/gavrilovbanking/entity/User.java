@@ -20,11 +20,13 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
 import lombok.Data;
 
 @Entity
 @Table(name = "users")
 @Data
+@Builder
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -56,12 +58,15 @@ public class User implements UserDetails {
     @JoinTable(  name = "user_roles", 
             joinColumns = @JoinColumn(name = "user_id"), 
             inverseJoinColumns = @JoinColumn(name = "role_id"))
+    @Builder.Default
     private Set<Role> roles = new HashSet<>();
 
     @Column(name = "userIsNotBlocked")
+    @Builder.Default
     private boolean userIsNotBlocked = true;
 
     @Column(name = "userIsNotExpired")
+    @Builder.Default
     private boolean credentialsIsNotExpired = true;
 
     @Override

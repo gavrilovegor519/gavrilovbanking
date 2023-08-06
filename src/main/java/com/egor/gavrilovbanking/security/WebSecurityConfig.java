@@ -1,79 +1,50 @@
 package com.egor.gavrilovbanking.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
-import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import com.egor.gavrilovbanking.enums.RoleEnum;
+import com.egor.gavrilovbanking.constants.Roles;
 
 @Configuration
-@EnableMethodSecurity
+@EnableWebSecurity
+@RequiredArgsConstructor
 public class WebSecurityConfig {
-    @Autowired
-    private UserDetailsServiceImpl userDetailsService;
 
-    @Autowired
-    private AuthEntryPointJwt unauthorizedHandler;
+    private final JwtAuthFilter jwtAuthenticationFilter;
 
     @Bean
-    public AuthTokenFilter authenticationJwtTokenFilter() {
-        return new AuthTokenFilter();
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+                .csrf(csrf -> csrf.disable())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(authHttp -> authHttp
+                        .requestMatchers(new AntPathRequestMatcher("/user/**")).hasRole(Roles.ROLE_USER)
+                        .requestMatchers(new AntPathRequestMatcher("/admin/**")).hasRole(Roles.ROLE_ADMIN)
+                        .anyRequest().permitAll());
+
+        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
     }
 
     @Bean
-    public DaoAuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        
-        authProvider.setUserDetailsService(userDetailsService);
-        authProvider.setPasswordEncoder(passwordEncoder());
-    
-        return authProvider;
-    }
-    
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
-        return authConfig.getAuthenticationManager();
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    MvcRequestMatcher.Builder mvc(HandlerMappingIntrospector introspector) {
-        return new MvcRequestMatcher.Builder(introspector);
-    }
-
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, MvcRequestMatcher.Builder mvc) throws Exception {
-        http.csrf(csrf -> csrf.disable())
-            .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(auth -> 
-                auth.requestMatchers(mvc.pattern("/api/auth/**")).permitAll()
-                    .requestMatchers(mvc.pattern("/api/banking/**")).hasAnyAuthority(RoleEnum.USER.toString())
-                    .requestMatchers(mvc.pattern("/api/staff/**")).hasAnyAuthority(RoleEnum.STAFF.toString())
-                    .requestMatchers(mvc.pattern("/api/admin/**")).hasAnyAuthority(RoleEnum.ADMIN.toString())
-                    .anyRequest().permitAll()
-            );
-        
-        http.authenticationProvider(authenticationProvider());
-
-        http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
-        
-        return http.build();
-    }
 }

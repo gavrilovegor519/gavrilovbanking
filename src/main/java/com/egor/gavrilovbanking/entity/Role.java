@@ -2,6 +2,8 @@ package com.egor.gavrilovbanking.entity;
 
 import org.springframework.security.core.GrantedAuthority;
 
+import com.egor.gavrilovbanking.enums.RoleEnum;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -21,10 +23,10 @@ public class Role implements GrantedAuthority {
 
     @Column(name = "name")
     @NotBlank
-    private String name;
+    private RoleEnum role;
 
     @Override
     public String getAuthority() {
-        return name;
+        return role.toString();
     }
 }

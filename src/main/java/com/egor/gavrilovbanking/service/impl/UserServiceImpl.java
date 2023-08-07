@@ -1,19 +1,14 @@
 package com.egor.gavrilovbanking.service.impl;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 import org.springframework.stereotype.Service;
 
 import com.egor.gavrilovbanking.constants.Roles;
 import com.egor.gavrilovbanking.converters.UserDTOToUserConverter;
-import com.egor.gavrilovbanking.dto.LoginDTO;
-import com.egor.gavrilovbanking.dto.UserDTO;
-import com.egor.gavrilovbanking.entity.Role;
-import com.egor.gavrilovbanking.entity.User;
-import com.egor.gavrilovbanking.repo.RoleRepo;
-import com.egor.gavrilovbanking.repo.UserRepo;
+import com.egor.gavrilovbanking.dto.*;
+import com.egor.gavrilovbanking.entity.*;
+import com.egor.gavrilovbanking.repo.*;
 import com.egor.gavrilovbanking.security.JwtUtilities;
 import com.egor.gavrilovbanking.service.UserService;
 

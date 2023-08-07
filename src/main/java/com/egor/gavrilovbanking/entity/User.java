@@ -6,7 +6,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
 import lombok.*;
 
 @Entity
@@ -19,19 +18,12 @@ public class User implements UserDetails {
     private Long id;
 
     @Column(name = "username", unique = true)
-    @NotBlank
-    @Size(max = 20)
     private String username;
 
     @Column(name = "password")
-    @NotBlank
-    @Size(max = 120)
     private String password;
 
     @Column(name = "email", unique = true)
-    @NotBlank
-    @Size(max = 50)
-    @Email
     private String email;
 
     @Column(name = "tel", unique = true)

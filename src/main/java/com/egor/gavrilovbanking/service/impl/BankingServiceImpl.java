@@ -1,6 +1,5 @@
 package com.egor.gavrilovbanking.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -8,9 +7,11 @@ import com.egor.gavrilovbanking.entity.User;
 import com.egor.gavrilovbanking.repo.UserRepo;
 import com.egor.gavrilovbanking.service.BankingService;
 
+import lombok.AllArgsConstructor;
+
 @Service
+@AllArgsConstructor
 public class BankingServiceImpl implements BankingService {
-    @Autowired
     private UserRepo userRepo;
 
     @Override
@@ -25,16 +26,19 @@ public class BankingServiceImpl implements BankingService {
     @Transactional
     public void getMoney(long amount, String username) {
         User user = userRepo.findUserByUsername(username);
+        assert user != null;
         user.setAmountOfMoney(user.getAmountOfMoney() - amount);
         userRepo.save(user);
     }
 
     @Override
     @Transactional
-    public void transferMoney(long amount, String sender, String getter) {
+    public void transferMoney(long amount, String sender, String reciver) {
         User user = userRepo.findUserByUsername(sender);
+        assert user != null;
+        User user2 = userRepo.findUserByUsername(reciver);
+        assert user2 != null;
         user.setAmountOfMoney(user.getAmountOfMoney() - amount);
-        User user2 = userRepo.findUserByUsername(getter);
         user2.setAmountOfMoney(user.getAmountOfMoney() + amount);
         userRepo.save(user);
         userRepo.save(user2);
@@ -44,6 +48,7 @@ public class BankingServiceImpl implements BankingService {
     @Transactional
     public long getBalance(String username) {
         User user = userRepo.findUserByUsername(username);
+        assert user != null;
         return user.getAmountOfMoney();
     }
     

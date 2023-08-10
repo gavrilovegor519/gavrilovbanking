@@ -3,6 +3,7 @@ package com.egor.gavrilovbanking.service.impl;
 import java.util.*;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.egor.gavrilovbanking.constants.Roles;
 import com.egor.gavrilovbanking.converters.UserDTOToUserConverter;
@@ -24,6 +25,7 @@ public class UserServiceImpl implements UserService {
     private final UserDTOToUserConverter userDtoToUserConverter;
 
     @Override
+    @Transactional
     public String login(LoginDTO login) {
         User user = userRepository.findUserByUsername(login.getUsername());
         List<String> rolesNames = new ArrayList<>();
@@ -32,6 +34,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void reg(UserDTO userData) {
         User user = userDtoToUserConverter.convert(userData);
         assert user != null;

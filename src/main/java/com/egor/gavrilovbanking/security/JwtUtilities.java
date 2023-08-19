@@ -21,9 +21,17 @@ import java.util.function.Function;
 @Component
 public class JwtUtilities {
 
-    private String secret = "m4QZ0DMqWtVpXiXM45Pn1pYWsWZCzn5Ek5OC8RnnvU9rR6SLkkrSIS8v0J1H04dpbX9hjaRYKmc";
+    /**
+     TODO: change this test (!) secret key.
+     I'm not able to using a application-dev.properties because of exceptions.
+     More info from Google search results:
+     1) <a href="https://stackoverflow.com/questions/60275087/java-lang-illegalargumentexception-secret-key-byte-array-cannot-be-null-or-empt">First link</a>
+     2) <a href="https://stackoverflow.com/questions/57058474/getting-java-lang-illegalargumentexception-decode-argument-cannot-be-null-whe">Second link</a>
+     I'm not found working solutions.
+     */
+    private final String secret = "m4QZ0DMqWtVpXiXM45Pn1pYWsWZCzn5Ek5OC8RnnvU9rR6SLkkrSIS8v0J1H04dpbX9hjaRYKmc";
 
-    private Long jwtExpiration = 86400000L;
+    private final Long jwtExpiration = 86400000L;
 
     byte[] keyBytes = Decoders.BASE64.decode(secret);
     Key key = Keys.hmacShaKeyFor(keyBytes);

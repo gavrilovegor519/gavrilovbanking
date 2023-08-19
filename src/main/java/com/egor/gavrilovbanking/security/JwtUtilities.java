@@ -31,10 +31,8 @@ public class JwtUtilities {
      */
     private final String secret = "m4QZ0DMqWtVpXiXM45Pn1pYWsWZCzn5Ek5OC8RnnvU9rR6SLkkrSIS8v0J1H04dpbX9hjaRYKmc";
 
-    private final Long jwtExpiration = 86400000L;
-
-    byte[] keyBytes = Decoders.BASE64.decode(secret);
-    Key key = Keys.hmacShaKeyFor(keyBytes);
+    final byte[] keyBytes = Decoders.BASE64.decode(secret);
+    final Key key = Keys.hmacShaKeyFor(keyBytes);
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -63,6 +61,7 @@ public class JwtUtilities {
     }
 
     public String generateToken(String username, List<String> roles) {
+        long jwtExpiration = 86400000L;
 
         return Jwts.builder().setSubject(username).claim("role", roles).setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(Date.from(Instant.now().plus(jwtExpiration, ChronoUnit.MILLIS)))

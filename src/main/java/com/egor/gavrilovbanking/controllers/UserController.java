@@ -6,7 +6,6 @@ import com.egor.gavrilovbanking.dto.*;
 import com.egor.gavrilovbanking.service.UserService;
 
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
 
 
 @RestController

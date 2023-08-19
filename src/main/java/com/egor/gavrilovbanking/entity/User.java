@@ -11,6 +11,8 @@ import lombok.*;
 @Entity
 @Table(name = "users")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class User implements UserDetails {
     @Id

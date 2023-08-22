@@ -31,8 +31,8 @@ public class JwtUtilities {
      */
     private final String secret = "m4QZ0DMqWtVpXiXM45Pn1pYWsWZCzn5Ek5OC8RnnvU9rR6SLkkrSIS8v0J1H04dpbX9hjaRYKmc";
 
-    final byte[] keyBytes = Decoders.BASE64.decode(secret);
-    final Key key = Keys.hmacShaKeyFor(keyBytes);
+    private final byte[] keyBytes = Decoders.BASE64.decode(secret);
+    private final Key key = Keys.hmacShaKeyFor(keyBytes);
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);

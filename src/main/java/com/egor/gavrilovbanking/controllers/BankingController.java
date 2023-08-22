@@ -30,7 +30,7 @@ public class BankingController {
     }
 
     @GetMapping("/user/banking/balance")
-    public void balance(Authentication authentication) {
-        bankingService.getBalance(authentication.getName());
+    public long balance(Authentication authentication) {
+        return bankingService.getBalance(authentication.getName());
     }
 }

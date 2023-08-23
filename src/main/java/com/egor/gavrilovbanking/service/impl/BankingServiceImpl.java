@@ -35,9 +35,13 @@ public class BankingServiceImpl implements BankingService {
     @Transactional
     public void transferMoney(long amount, String sender, String reciver) {
         User user = userRepo.findUserByUsername(sender);
-        assert user != null;
+        if (user == null) {
+            throw new IllegalArgumentException("User not found");
+        }
         User user2 = userRepo.findUserByUsername(reciver);
-        assert user2 != null;
+        if (user2 == null) {
+            throw new IllegalArgumentException("User not found");
+        }
         user.setAmountOfMoney(user.getAmountOfMoney() - amount);
         user2.setAmountOfMoney(user.getAmountOfMoney() + amount);
         userRepo.save(user);

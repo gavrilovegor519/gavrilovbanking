@@ -16,7 +16,7 @@ public class UserDTOToUserConverter implements Converter<UserDTO, User> {
 
     @Override
     public User convert(UserDTO userDTO) {
-        User.UserBuilder builder = User.builder()
+        var builder = User.builder()
                 .email(userDTO.getEmail())
                 .username(userDTO.getUsername())
                 .tel(userDTO.getTel());

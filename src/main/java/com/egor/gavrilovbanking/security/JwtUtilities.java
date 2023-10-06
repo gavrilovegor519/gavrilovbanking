@@ -43,7 +43,7 @@ public class JwtUtilities {
     }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-        final Claims claims = extractAllClaims(token);
+        final var claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
 
@@ -52,7 +52,7 @@ public class JwtUtilities {
     }
 
     public Boolean validateToken(String token, UserDetails userDetails) {
-        final String username = extractUsername(token);
+        final var username = extractUsername(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
@@ -61,7 +61,7 @@ public class JwtUtilities {
     }
 
     public String generateToken(String username, List<String> roles) {
-        long jwtExpiration = 86400000L;
+        var jwtExpiration = 86400000L;
 
         return Jwts.builder().setSubject(username).claim("role", roles).setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(Date.from(Instant.now().plus(jwtExpiration, ChronoUnit.MILLIS)))
@@ -92,7 +92,7 @@ public class JwtUtilities {
     }
 
     public String getToken(HttpServletRequest httpServletRequest) {
-        final String bearerToken = httpServletRequest.getHeader("Authorization");
+        final var bearerToken = httpServletRequest.getHeader("Authorization");
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7);
         } // The part after "Bearer "

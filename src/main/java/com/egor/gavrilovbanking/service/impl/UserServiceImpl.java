@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.egor.gavrilovbanking.constants.Roles;
 import com.egor.gavrilovbanking.converters.UserDTOToUserConverter;
 import com.egor.gavrilovbanking.dto.*;
-import com.egor.gavrilovbanking.entity.*;
 import com.egor.gavrilovbanking.repo.*;
 import com.egor.gavrilovbanking.security.JwtUtilities;
 import com.egor.gavrilovbanking.service.UserService;
@@ -27,8 +26,8 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public String login(LoginDTO login) {
-        User user = userRepository.findUserByUsername(login.getUsername());
-        List<String> rolesNames = new ArrayList<>();
+        var user = userRepository.findUserByUsername(login.getUsername());
+        var rolesNames = new ArrayList<String>();
         user.getRoles().forEach(r -> rolesNames.add(r.getAuthority()));
         return jwtUtilities.generateToken(user.getUsername(), rolesNames);
     }
@@ -36,11 +35,11 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void reg(UserDTO userData) {
-        User user = userDtoToUserConverter.convert(userData);
+        var user = userDtoToUserConverter.convert(userData);
         assert user != null;
         user.setRoles(new HashSet<>());
 
-        Role role = roleRepository.getRoleByName(Roles.ROLE_USER);
+        var role = roleRepository.getRoleByName(Roles.ROLE_USER);
         user.getRoles().add(role);
 
         userRepository.save(user);

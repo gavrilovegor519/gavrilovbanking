@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -29,14 +28,14 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                                     @NonNull FilterChain filterChain)
             throws ServletException, IOException {
 
-        String token = jwtUtilities.getToken(request);
+        var token = jwtUtilities.getToken(request);
 
         if (token != null && jwtUtilities.validateToken(token)) {
-            String username = jwtUtilities.extractUsername(token);
+            var username = jwtUtilities.extractUsername(token);
 
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            var userDetails = userDetailsService.loadUserByUsername(username);
             if (userDetails != null) {
-                UsernamePasswordAuthenticationToken authentication =
+                var authentication =
                         new UsernamePasswordAuthenticationToken(userDetails.getUsername(), null, userDetails.getAuthorities());
                 log.info("authenticated user with username :{}", username);
                 SecurityContextHolder.getContext().setAuthentication(authentication);

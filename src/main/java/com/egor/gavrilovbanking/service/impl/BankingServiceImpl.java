@@ -25,7 +25,12 @@ public class BankingServiceImpl implements BankingService {
     @Transactional
     public void getMoney(long amount, String username) {
         var user = userRepo.findUserByUsername(username);
+
         assert user != null;
+        if (user.getAmountOfMoney() < amount) {
+            throw new IllegalArgumentException("Insufficient funds");
+        }
+
         user.setAmountOfMoney(user.getAmountOfMoney() - amount);
         userRepo.save(user);
     }
@@ -37,12 +42,19 @@ public class BankingServiceImpl implements BankingService {
         if (user == null) {
             throw new IllegalArgumentException("User not found");
         }
+
         var user2 = userRepo.findUserByUsername(reciver);
         if (user2 == null) {
             throw new IllegalArgumentException("User not found");
         }
+
+        if (user.getAmountOfMoney() < amount) {
+            throw new IllegalArgumentException("Insufficient funds");
+        }
+
         user.setAmountOfMoney(user.getAmountOfMoney() - amount);
         user2.setAmountOfMoney(user.getAmountOfMoney() + amount);
+
         userRepo.save(user);
         userRepo.save(user2);
     }

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
@@ -39,25 +40,11 @@ public class User implements UserDetails {
     @Column(name = "amountOfMoney")
     private long amountOfMoney;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(  name = "user_roles", 
-            joinColumns = @JoinColumn(name = "user_id"), 
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    @Builder.Default
-    @ToString.Exclude
-    private Set<Role> roles = new HashSet<>();
-
-    @Column(name = "userIsNotBlocked")
-    @Builder.Default
-    private boolean userIsNotBlocked = true;
-
-    @Column(name = "userIsNotExpired")
-    @Builder.Default
-    private boolean credentialsIsNotExpired = true;
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles;
+        var userRole = new HashSet<SimpleGrantedAuthority>();
+        userRole.add(new SimpleGrantedAuthority("ROLE_USER"));
+        return userRole;
     }
 
     @Override
@@ -67,12 +54,12 @@ public class User implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return userIsNotBlocked;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return credentialsIsNotExpired;
+        return true;
     }
 
     @Override

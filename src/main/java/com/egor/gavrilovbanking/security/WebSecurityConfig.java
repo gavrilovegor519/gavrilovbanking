@@ -27,10 +27,12 @@ public class WebSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
+                .cors(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authHttp -> authHttp
-                        .requestMatchers(new AntPathRequestMatcher("/user/**")).hasRole(Roles.ROLE_USER)
-                        .requestMatchers(new AntPathRequestMatcher("/admin/**")).hasRole(Roles.ROLE_ADMIN)
+                        .requestMatchers("/user/reg").permitAll()
+                        .requestMatchers("/user/login").permitAll()
+                        .requestMatchers("/user/banking/**").hasAuthority(Roles.ROLE_USER)
                         .anyRequest().permitAll());
 
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

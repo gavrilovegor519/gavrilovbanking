@@ -60,10 +60,10 @@ public class JwtUtilities {
         return extractExpiration(token).before(new Date());
     }
 
-    public String generateToken(String username, List<String> roles) {
+    public String generateToken(String username, String role) {
         var jwtExpiration = 86400000L;
 
-        return Jwts.builder().setSubject(username).claim("role", roles).setIssuedAt(new Date(System.currentTimeMillis()))
+        return Jwts.builder().setSubject(username).claim("role", role).setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(Date.from(Instant.now().plus(jwtExpiration, ChronoUnit.MILLIS)))
                 .signWith(key).compact();
     }
@@ -92,7 +92,7 @@ public class JwtUtilities {
     }
 
     public String getToken(HttpServletRequest httpServletRequest) {
-        final var bearerToken = httpServletRequest.getHeader("Authorization");
+        var bearerToken = httpServletRequest.getHeader("Authorization");
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7);
         } // The part after "Bearer "

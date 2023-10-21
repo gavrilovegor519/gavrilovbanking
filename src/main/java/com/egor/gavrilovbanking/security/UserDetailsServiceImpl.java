@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.egor.gavrilovbanking.repo.UserRepo;
 
 @Service
-@NoArgsConstructor
 @AllArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
     private UserRepo userRepository;

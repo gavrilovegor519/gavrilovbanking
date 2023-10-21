@@ -1,7 +1,5 @@
 package com.egor.gavrilovbanking.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import jakarta.validation.constraints.*;
 import lombok.Builder;
 import lombok.Data;
@@ -13,7 +11,6 @@ public class UserDTO {
     @Size(max = 20)
     private String username;
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @NotBlank
     @Size(max = 120)
     private String password;

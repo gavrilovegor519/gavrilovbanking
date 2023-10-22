@@ -1,4 +1,4 @@
-package com.egor.gavrilovbanking;
+package com.egor.gavrilovbanking.integrationtests;
 
 import com.egor.gavrilovbanking.dto.LoginDTO;
 import com.egor.gavrilovbanking.dto.UserDTO;
@@ -20,7 +20,7 @@ import java.nio.charset.Charset;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class RestTest {
+public class RestIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
 

@@ -3,7 +3,6 @@ package com.egor.gavrilovbanking;
 import com.egor.gavrilovbanking.dto.LoginDTO;
 import com.egor.gavrilovbanking.dto.UserDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -25,53 +24,49 @@ public class RestTest {
     @Autowired
     private MockMvc mockMvc;
 
-    private final UserDTO userDTO = UserDTO.builder()
+    private static final UserDTO userDTO = UserDTO.builder()
             .tel(88005553535L)
             .email("1@1.ru")
             .password("qwerty")
             .username("test1")
             .build();
 
-    private final UserDTO userDTO2 = UserDTO.builder()
+    private static final UserDTO userDTO2 = UserDTO.builder()
             .tel(88005556666L)
             .email("2@1.ru")
             .password("qwerty")
             .username("test2")
             .build();
 
-    private final LoginDTO loginDTO = LoginDTO.builder()
+    private static final LoginDTO loginDTO = LoginDTO.builder()
             .username(userDTO.getUsername())
             .password(userDTO.getPassword())
             .build();
 
-    private String token;
-
-    @BeforeEach
-    public void getToken() throws Exception {
+    @Test
+    public void testBankingRestApp() throws Exception {
+        String token;
         ObjectMapper objectMapper = new ObjectMapper();
 
         mockMvc.perform(post("/user/reg")
                         .content(objectMapper.writeValueAsString(userDTO))
                         .characterEncoding(Charset.defaultCharset())
                         .contentType(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isOk());
+                .andExpect(status().isOk());
 
         mockMvc.perform(post("/user/reg")
                         .content(objectMapper.writeValueAsString(userDTO2))
                         .characterEncoding(Charset.defaultCharset())
                         .contentType(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isOk());
+                .andExpect(status().isOk());
 
         token = mockMvc.perform(get("/user/login")
                         .content(objectMapper.writeValueAsString(loginDTO))
                         .characterEncoding(Charset.defaultCharset())
                         .contentType(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isOk())
-                        .andReturn().getResponse().getContentAsString();
-    }
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
 
-    @Test
-    public void testBankingRestApp() throws Exception {
         mockMvc.perform(post("/user/banking/addMoney")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                         .param("amount", "300000")

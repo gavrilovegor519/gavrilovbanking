@@ -71,7 +71,7 @@ public class RestTest {
     }
 
     @Test
-    public void testBankingSubsystem() throws Exception {
+    public void testBankingRestApp() throws Exception {
         mockMvc.perform(post("/user/banking/addMoney")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                         .param("amount", "300000")

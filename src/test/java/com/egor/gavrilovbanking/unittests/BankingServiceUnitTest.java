@@ -79,8 +79,6 @@ public class BankingServiceUnitTest {
 
         bankingService.transferMoney(15000, "test1", "test2");
 
-
-
         assertEquals(15000, user.getAmountOfMoney());
         assertEquals(20000, user2.getAmountOfMoney());
     }

@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.nio.charset.Charset;
@@ -115,5 +116,12 @@ public class RestTest {
                         .characterEncoding(Charset.defaultCharset())
                         .contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isBadRequest());
+
+        mockMvc.perform(get("/user/banking/balance")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                        .characterEncoding(Charset.defaultCharset())
+                        .contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isOk())
+                        .andExpect(content().string("120000"));
     }
 }

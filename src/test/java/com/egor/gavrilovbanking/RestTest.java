@@ -31,6 +31,13 @@ public class RestTest {
             .username("test1")
             .build();
 
+    private final UserDTO userDTO2 = UserDTO.builder()
+            .tel(88005556666L)
+            .email("2@1.ru")
+            .password("qwerty")
+            .username("test2")
+            .build();
+
     private final LoginDTO loginDTO = LoginDTO.builder()
             .username(userDTO.getUsername())
             .password(userDTO.getPassword())
@@ -44,6 +51,12 @@ public class RestTest {
 
         mockMvc.perform(post("/user/reg")
                         .content(objectMapper.writeValueAsString(userDTO))
+                        .characterEncoding(Charset.defaultCharset())
+                        .contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isOk());
+
+        mockMvc.perform(post("/user/reg")
+                        .content(objectMapper.writeValueAsString(userDTO2))
                         .characterEncoding(Charset.defaultCharset())
                         .contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isOk());
@@ -77,6 +90,30 @@ public class RestTest {
                         .param("amount", "30000000")
                         .characterEncoding(Charset.defaultCharset())
                         .contentType(MediaType.APPLICATION_JSON))
-                        .andExpect(status().is5xxServerError());
+                        .andExpect(status().isBadRequest());
+
+        mockMvc.perform(post("/user/banking/transferMoney")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                        .param("amount", "30000")
+                        .param("reciver", "test2")
+                        .characterEncoding(Charset.defaultCharset())
+                        .contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isOk());
+
+        mockMvc.perform(post("/user/banking/transferMoney")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                        .param("amount", "30000")
+                        .param("reciver", "test3")
+                        .characterEncoding(Charset.defaultCharset())
+                        .contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isBadRequest());
+
+        mockMvc.perform(post("/user/banking/transferMoney")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                        .param("amount", "3000000")
+                        .param("reciver", "test2")
+                        .characterEncoding(Charset.defaultCharset())
+                        .contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isBadRequest());
     }
 }

@@ -26,7 +26,6 @@ public class BankingServiceImpl implements BankingService {
     public void getMoney(long amount, String username) {
         var user = userRepo.findUserByUsername(username);
 
-        assert user != null;
         if (user.getAmountOfMoney() < amount) {
             throw new IllegalArgumentException("Insufficient funds");
         }

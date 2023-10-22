@@ -52,7 +52,7 @@ public class BankingServiceImpl implements BankingService {
         }
 
         user.setAmountOfMoney(user.getAmountOfMoney() - amount);
-        user2.setAmountOfMoney(user.getAmountOfMoney() + amount);
+        user2.setAmountOfMoney(user2.getAmountOfMoney() + amount);
 
         userRepo.save(user);
         userRepo.save(user2);

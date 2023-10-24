@@ -32,8 +32,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void reg(UserDTO userData) {
-        User user = userDtoToUserConverter.convert(userData);
+    public void reg(UserDTO userDTO) {
+        User user = userDtoToUserConverter.convert(userDTO);
         assert user != null;
         userRepository.save(user);
     }

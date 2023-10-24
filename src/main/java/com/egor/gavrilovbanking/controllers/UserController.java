@@ -1,5 +1,6 @@
 package com.egor.gavrilovbanking.controllers;
 
+import com.egor.gavrilovbanking.exceptions.UserNotFound;
 import org.springframework.web.bind.annotation.*;
 
 import com.egor.gavrilovbanking.dto.*;
@@ -14,7 +15,7 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/user/login")
-    public String getToken(@RequestBody LoginDTO loginDTO) {
+    public String getToken(@RequestBody LoginDTO loginDTO) throws UserNotFound {
         return userService.login(loginDTO);
     }
 

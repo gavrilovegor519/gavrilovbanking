@@ -24,9 +24,6 @@ class UserServiceImplTest {
     @Mock
     private UserRepo userRepository;
 
-    @Mock
-    private LoginDTO loginDTO;
-
     @InjectMocks
     private UserServiceImpl userService;
 
@@ -40,7 +37,11 @@ class UserServiceImplTest {
                 .password("qwerty")
                 .build();
 
-        when(loginDTO.getUsername()).thenReturn("test1");
+        LoginDTO loginDTO = LoginDTO.builder()
+                .username(user.getUsername())
+                .password(user.getPassword())
+                .build();
+
         when(userRepository.existsUserByUsername("test1"))
                 .thenReturn(true);
         when(userRepository.findUserByUsername("test1")).thenReturn(user);

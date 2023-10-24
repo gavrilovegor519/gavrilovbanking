@@ -1,5 +1,7 @@
 package com.egor.gavrilovbanking.service.impl;
 
+import com.egor.gavrilovbanking.entity.User;
+import com.egor.gavrilovbanking.exceptions.UserNotFound;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,16 +17,23 @@ public class BankingServiceImpl implements BankingService {
 
     @Override
     @Transactional
-    public void addMoney(long amount, String username) {
-        var user = userRepo.findUserByUsername(username);
+    public void addMoney(long amount, String username) throws UserNotFound {
+        boolean userIsExist = userRepo.existsUserByUsername(username);
+        if (!userIsExist) throw new UserNotFound("User not found!");
+
+        User user = userRepo.findUserByUsername(username);
+
         user.setAmountOfMoney(user.getAmountOfMoney() + amount);
         userRepo.save(user);
     }
 
     @Override
     @Transactional
-    public void getMoney(long amount, String username) {
-        var user = userRepo.findUserByUsername(username);
+    public void getMoney(long amount, String username) throws UserNotFound {
+        boolean userIsExist = userRepo.existsUserByUsername(username);
+        if (!userIsExist) throw new UserNotFound("User not found!");
+
+        User user = userRepo.findUserByUsername(username);
 
         if (user.getAmountOfMoney() < amount) {
             throw new IllegalArgumentException("Insufficient funds");
@@ -36,16 +45,15 @@ public class BankingServiceImpl implements BankingService {
 
     @Override
     @Transactional
-    public void transferMoney(long amount, String sender, String reciver) {
-        var user = userRepo.findUserByUsername(sender);
-        if (user == null) {
-            throw new IllegalArgumentException("User not found");
-        }
+    public void transferMoney(long amount, String sender, String receiver) throws UserNotFound {
+        boolean userIsExist = userRepo.existsUserByUsername(sender);
+        if (!userIsExist) throw new UserNotFound("Sender not found!");
 
-        var user2 = userRepo.findUserByUsername(reciver);
-        if (user2 == null) {
-            throw new IllegalArgumentException("User not found");
-        }
+        boolean userIsExist2 = userRepo.existsUserByUsername(receiver);
+        if (!userIsExist2) throw new UserNotFound("Receiver not found!");
+
+        User user = userRepo.findUserByUsername(sender);
+        User user2 = userRepo.findUserByUsername(receiver);
 
         if (user.getAmountOfMoney() < amount) {
             throw new IllegalArgumentException("Insufficient funds");
@@ -61,7 +69,7 @@ public class BankingServiceImpl implements BankingService {
     @Override
     @Transactional
     public long getBalance(String username) {
-        var user = userRepo.findUserByUsername(username);
+        User user = userRepo.findUserByUsername(username);
         assert user != null;
         return user.getAmountOfMoney();
     }

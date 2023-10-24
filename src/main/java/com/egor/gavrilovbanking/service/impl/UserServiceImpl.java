@@ -1,5 +1,7 @@
 package com.egor.gavrilovbanking.service.impl;
 
+import com.egor.gavrilovbanking.entity.User;
+import com.egor.gavrilovbanking.exceptions.UserNotFound;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,17 +21,20 @@ public class UserServiceImpl implements UserService {
     private final UserDTOToUserConverter userDtoToUserConverter;
 
     @Override
-    public String login(LoginDTO login) {
-        var user = userRepository.findUserByUsername(login.getUsername());
-        assert user != null;
+    public String login(LoginDTO login) throws UserNotFound {
+        String username = login.getUsername();
+
+        boolean userIsExist = userRepository.existsUserByUsername(username);
+        if (!userIsExist) throw new UserNotFound("User not found!");
+
+        User user = userRepository.findUserByUsername(username);
         return jwtUtilities.generateToken(user.getUsername(), Roles.ROLE_USER);
     }
 
     @Override
     public void reg(UserDTO userData) {
-        var user = userDtoToUserConverter.convert(userData);
+        User user = userDtoToUserConverter.convert(userData);
         assert user != null;
-
         userRepository.save(user);
     }
     

@@ -1,5 +1,6 @@
 package com.egor.gavrilovbanking.controllers;
 
+import com.egor.gavrilovbanking.exceptions.UserNotFound;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -8,7 +9,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class ExceptionResolver {
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public void resolveAndWriteException(HttpServletResponse response) {
+    public void illegalArgumentException(HttpServletResponse response) {
         response.setStatus(400);
+    }
+
+    @ExceptionHandler(UserNotFound.class)
+    public void userNotFoundException(HttpServletResponse response) {
+        response.setStatus(403);
     }
 }

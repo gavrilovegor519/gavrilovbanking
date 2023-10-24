@@ -23,21 +23,22 @@ import java.util.Set;
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "username", unique = true, length = 20)
+    @Column(name = "username", unique = true, length = 20, nullable = false)
     private String username;
 
-    @Column(name = "password", length = 120)
+    @Column(name = "password", length = 120, nullable = false)
     private String password;
 
-    @Column(name = "email", unique = true, length = 50)
+    @Column(name = "email", unique = true, length = 50, nullable = false)
     private String email;
 
-    @Column(name = "tel", unique = true)
+    @Column(name = "tel", unique = true, nullable = false)
     private long tel;
 
-    @Column(name = "amountOfMoney")
+    @Column(name = "amountOfMoney", nullable = false)
     private long amountOfMoney;
 
     @Override

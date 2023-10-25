@@ -1,6 +1,5 @@
 package com.egor.gavrilovbanking.service.impl;
 
-import com.egor.gavrilovbanking.constants.Roles;
 import com.egor.gavrilovbanking.dto.LoginDTO;
 import com.egor.gavrilovbanking.entity.User;
 import com.egor.gavrilovbanking.exceptions.UserNotFound;
@@ -10,15 +9,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
 
-    @Mock
+    @Spy
     private JwtUtilities jwtUtilities;
 
     @Mock
@@ -28,7 +28,7 @@ class UserServiceImplTest {
     private UserServiceImpl userService;
 
     @Test
-    void login() throws UserNotFound {
+    void loginWithExistUser() throws UserNotFound {
         User user = User.builder()
                 .id(0L)
                 .username("test1")
@@ -45,8 +45,22 @@ class UserServiceImplTest {
         when(userRepository.existsUserByUsername("test1"))
                 .thenReturn(true);
         when(userRepository.findUserByUsername("test1")).thenReturn(user);
-        when(jwtUtilities.generateToken("test1", Roles.ROLE_USER)).thenReturn("test_token");
 
-        assertEquals(userService.login(loginDTO), "test_token");
+        String expectedToken = userService.login(loginDTO);
+
+        assertTrue(jwtUtilities.validateToken(expectedToken));
+    }
+
+    @Test
+    void loginWithNotExistUser() {
+        LoginDTO loginDTO = LoginDTO.builder()
+                .username("test1")
+                .password("qwerty")
+                .build();
+
+        when(userRepository.existsUserByUsername("test1"))
+                .thenReturn(false);
+
+        assertThrows(UserNotFound.class, () -> userService.login(loginDTO));
     }
 }

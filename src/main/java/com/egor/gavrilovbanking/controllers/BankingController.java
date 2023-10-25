@@ -31,7 +31,7 @@ public class BankingController {
     }
 
     @GetMapping("/user/banking/balance")
-    public long balance(Authentication authentication) {
+    public long balance(Authentication authentication) throws UserNotFound {
         return bankingService.getBalance(authentication.getName());
     }
 }

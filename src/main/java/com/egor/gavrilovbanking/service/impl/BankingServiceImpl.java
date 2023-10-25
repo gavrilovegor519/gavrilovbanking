@@ -68,9 +68,11 @@ public class BankingServiceImpl implements BankingService {
 
     @Override
     @Transactional
-    public long getBalance(String username) {
+    public long getBalance(String username) throws UserNotFound {
+        boolean userIsExist = userRepo.existsUserByUsername(username);
+        if (!userIsExist) throw new UserNotFound("User not found!");
+
         User user = userRepo.findUserByUsername(username);
-        assert user != null;
         return user.getAmountOfMoney();
     }
     

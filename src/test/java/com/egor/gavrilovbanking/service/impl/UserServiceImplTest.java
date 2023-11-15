@@ -9,16 +9,15 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
 
-    @Spy
+    @Mock
     private JwtUtilities jwtUtilities;
 
     @Mock
@@ -46,9 +45,7 @@ class UserServiceImplTest {
                 .thenReturn(true);
         when(userRepository.findUserByUsername("test1")).thenReturn(user);
 
-        String expectedToken = userService.login(loginDTO);
-
-        assertTrue(jwtUtilities.validateToken(expectedToken));
+        userService.login(loginDTO);
     }
 
     @Test

@@ -6,11 +6,12 @@ import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import java.security.Key;
+import javax.crypto.SecretKey;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
@@ -20,25 +21,24 @@ import java.util.function.Function;
 @Component
 public class JwtUtilities {
 
-    /**
-     TODO: change this test (!) secret key.
-     I'm not able to using a application-dev.properties because of exceptions.
-     More info from Google search results:
-     1) <a href="https://stackoverflow.com/questions/60275087/java-lang-illegalargumentexception-secret-key-byte-array-cannot-be-null-or-empt">First link</a>
-     2) <a href="https://stackoverflow.com/questions/57058474/getting-java-lang-illegalargumentexception-decode-argument-cannot-be-null-whe">Second link</a>
-     I'm not found working solutions.
-     */
-    private final String secret = "m4QZ0DMqWtVpXiXM45Pn1pYWsWZCzn5Ek5OC8RnnvU9rR6SLkkrSIS8v0J1H04dpbX9hjaRYKmc";
+    private final SecretKey jwtSecret;
 
-    private final byte[] keyBytes = Decoders.BASE64.decode(secret);
-    private final Key key = Keys.hmacShaKeyFor(keyBytes);
+    private final long jwtExpirationMs;
+
+    public JwtUtilities(
+            @Value("${jwt.secret:testtesttesttesttesttesttesttesttesttesttest}") String jwtSecret,
+            @Value("${jwt.expirationMs:86400000}") String jwtExpirationMs
+    ) {
+        this.jwtSecret = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
+        this.jwtExpirationMs = Long.parseLong(jwtExpirationMs);
+    }
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
     public Claims extractAllClaims(String token) {
-        return Jwts.parser().setSigningKey(key).build().parseClaimsJws(token).getBody();
+        return Jwts.parser().setSigningKey(jwtSecret).build().parseClaimsJws(token).getBody();
     }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
@@ -60,16 +60,14 @@ public class JwtUtilities {
     }
 
     public String generateToken(String username, String role) {
-        var jwtExpiration = 86400000L;
-
         return Jwts.builder().setSubject(username).claim("role", role).setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(Date.from(Instant.now().plus(jwtExpiration, ChronoUnit.MILLIS)))
-                .signWith(key).compact();
+                .setExpiration(Date.from(Instant.now().plus(jwtExpirationMs, ChronoUnit.MILLIS)))
+                .signWith(jwtSecret).compact();
     }
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parser().setSigningKey(key).build().parseClaimsJws(token);
+            Jwts.parser().setSigningKey(jwtSecret).build().parseClaimsJws(token);
             return true;
         } catch (SignatureException e) {
             log.info("Invalid JWT signature.");

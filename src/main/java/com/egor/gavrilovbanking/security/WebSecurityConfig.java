@@ -13,8 +13,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.egor.gavrilovbanking.constants.Roles;
-
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -29,9 +27,7 @@ public class WebSecurityConfig {
                 .cors(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authHttp -> authHttp
-                        .requestMatchers("/user/reg").permitAll()
-                        .requestMatchers("/user/login").permitAll()
-                        .requestMatchers("/user/banking/**").hasAuthority(Roles.ROLE_USER)
+                        .requestMatchers("/user/banking/**").authenticated()
                         .anyRequest().permitAll());
 
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

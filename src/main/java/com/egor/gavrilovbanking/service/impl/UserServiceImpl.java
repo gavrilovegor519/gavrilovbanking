@@ -25,10 +25,7 @@ public class UserServiceImpl implements UserService {
     public String login(LoginDTO login) throws UserNotFound {
         String username = login.getUsername();
 
-        boolean userIsExist = userRepository.existsUserByUsername(username);
-        if (!userIsExist) throw new UserNotFound("User not found!");
-
-        User user = userRepository.findUserByUsername(username);
+        User user = userRepository.findUserByUsername(username).orElseThrow(() -> new UserNotFound("User not found."));;
         return jwtUtilities.generateToken(user.getUsername(), Roles.ROLE_USER);
     }
 

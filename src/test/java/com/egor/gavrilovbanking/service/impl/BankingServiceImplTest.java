@@ -9,7 +9,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -31,9 +34,7 @@ class BankingServiceImplTest {
                 .password("qwerty")
                 .build();
 
-        when(userRepository.existsUserByUsername("test1"))
-                .thenReturn(true);
-        when(userRepository.findUserByUsername("test1")).thenReturn(user);
+        when(userRepository.findUserByUsername("test1")).thenReturn(Optional.ofNullable(user));
 
         bankingService.addMoney(30000, "test1");
 
@@ -42,9 +43,6 @@ class BankingServiceImplTest {
 
     @Test
     void addMoneyWithNotExistUser() {
-        when(userRepository.existsUserByUsername("test1"))
-                .thenReturn(false);
-
         assertThrows(UserNotFound.class, () -> bankingService.addMoney(30000, "test1"));
     }
 
@@ -59,9 +57,7 @@ class BankingServiceImplTest {
                 .amountOfMoney(50000)
                 .build();
 
-        when(userRepository.existsUserByUsername("test1"))
-                .thenReturn(true);
-        when(userRepository.findUserByUsername("test1")).thenReturn(user);
+        when(userRepository.findUserByUsername("test1")).thenReturn(Optional.ofNullable(user));
 
         bankingService.getMoney(30000, "test1");
 
@@ -70,9 +66,6 @@ class BankingServiceImplTest {
 
     @Test
     void getMoneyWithNotExistUser() {
-        when(userRepository.existsUserByUsername("test1"))
-                .thenReturn(false);
-
         assertThrows(UserNotFound.class, () -> bankingService.getMoney(30000, "test1"));
     }
 
@@ -86,9 +79,7 @@ class BankingServiceImplTest {
                 .password("qwerty")
                 .build();
 
-        when(userRepository.existsUserByUsername("test1"))
-                .thenReturn(true);
-        when(userRepository.findUserByUsername("test1")).thenReturn(user);
+        when(userRepository.findUserByUsername("test1")).thenReturn(Optional.ofNullable(user));
 
         assertThrows(IllegalArgumentException.class,
                 () -> bankingService.getMoney(30000, "test1"));
@@ -110,18 +101,13 @@ class BankingServiceImplTest {
                 .amountOfMoney(30000)
                 .build();
 
-        when(userRepository.existsUserByUsername("test1"))
-                .thenReturn(true);
-        when(userRepository.findUserByUsername("test1")).thenReturn(user);
+        when(userRepository.findUserByUsername("test1")).thenReturn(Optional.ofNullable(user));
 
         assertEquals(30000, bankingService.getBalance("test1"));
     }
 
     @Test
     void getBalanceWithNotExistUser() {
-        when(userRepository.existsUserByUsername("test1"))
-                .thenReturn(false);
-
         assertThrows(UserNotFound.class, () -> bankingService.getBalance("test1"));
     }
 }

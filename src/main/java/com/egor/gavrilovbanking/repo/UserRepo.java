@@ -1,12 +1,12 @@
 package com.egor.gavrilovbanking.repo;
 
 import com.egor.gavrilovbanking.entity.User;
-import jakarta.validation.constraints.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Optional;
+
 public interface UserRepo extends JpaRepository<User, Long> {
-    @NotNull
-    User findUserByUsername(String username);
+    Optional<User> findUserByUsername(String username);
 
     boolean existsUserByUsername(String username);
 

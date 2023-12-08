@@ -11,6 +11,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
@@ -41,9 +43,7 @@ class UserServiceImplTest {
                 .password(user.getPassword())
                 .build();
 
-        when(userRepository.existsUserByUsername("test1"))
-                .thenReturn(true);
-        when(userRepository.findUserByUsername("test1")).thenReturn(user);
+        when(userRepository.findUserByUsername("test1")).thenReturn(Optional.of(user));
 
         userService.login(loginDTO);
     }
@@ -54,9 +54,6 @@ class UserServiceImplTest {
                 .username("test1")
                 .password("qwerty")
                 .build();
-
-        when(userRepository.existsUserByUsername("test1"))
-                .thenReturn(false);
 
         assertThrows(UserNotFound.class, () -> userService.login(loginDTO));
     }

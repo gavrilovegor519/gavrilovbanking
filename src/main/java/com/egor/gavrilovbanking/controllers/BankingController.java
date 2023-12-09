@@ -1,12 +1,13 @@
 package com.egor.gavrilovbanking.controllers;
 
 import com.egor.gavrilovbanking.exceptions.UserNotFound;
-import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
-
 import com.egor.gavrilovbanking.service.BankingService;
-
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @AllArgsConstructor
@@ -25,9 +26,9 @@ public class BankingController {
 
     @PostMapping("/user/banking/transferMoney")
     public void transferMoney(@RequestParam long amount,
-                            @RequestParam String reciver,
+                            @RequestParam String receiver,
                             Authentication authentication) throws UserNotFound {
-        bankingService.transferMoney(amount, authentication.getName(), reciver);
+        bankingService.transferMoney(amount, authentication.getName(), receiver);
     }
 
     @GetMapping("/user/banking/balance")

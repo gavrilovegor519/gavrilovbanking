@@ -38,6 +38,7 @@ class BankingServiceImplTest {
 
         bankingService.addMoney(30000, "test1");
 
+        assert user != null;
         assertEquals(30000, user.getAmountOfMoney());
     }
 
@@ -61,6 +62,7 @@ class BankingServiceImplTest {
 
         bankingService.getMoney(30000, "test1");
 
+        assert user != null;
         assertEquals(20000, user.getAmountOfMoney());
     }
 
@@ -83,11 +85,6 @@ class BankingServiceImplTest {
 
         assertThrows(IllegalArgumentException.class,
                 () -> bankingService.getMoney(30000, "test1"));
-    }
-
-    // TODO: Add tests for transfer money.
-    @Test
-    void transferMoney() {
     }
 
     @Test

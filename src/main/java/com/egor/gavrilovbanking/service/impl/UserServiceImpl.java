@@ -1,7 +1,7 @@
 package com.egor.gavrilovbanking.service.impl;
 
 import com.egor.gavrilovbanking.constants.Roles;
-import com.egor.gavrilovbanking.converters.UserDTOToUserConverter;
+import com.egor.gavrilovbanking.converters.UserMapper;
 import com.egor.gavrilovbanking.dto.LoginDTO;
 import com.egor.gavrilovbanking.dto.UserDTO;
 import com.egor.gavrilovbanking.entity.User;
@@ -21,7 +21,7 @@ public class UserServiceImpl implements UserService {
 
     private final JwtUtilities jwtUtilities;
     private final UserRepo userRepository;
-    private final UserDTOToUserConverter userDtoToUserConverter;
+    private final UserMapper userMapper;
     private final BCryptPasswordEncoder passwordEncoder;
 
     @Override
@@ -53,7 +53,7 @@ public class UserServiceImpl implements UserService {
             throw new DuplicateUser("Duplicate registration data.");
         }
 
-        User user = userDtoToUserConverter.convert(userDTO);
+        User user = userMapper.map(userDTO);
         assert user != null;
         userRepository.save(user);
     }

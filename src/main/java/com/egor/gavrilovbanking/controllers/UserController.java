@@ -7,7 +7,6 @@ import com.egor.gavrilovbanking.exceptions.IncorrectPassword;
 import com.egor.gavrilovbanking.exceptions.UserNotFound;
 import com.egor.gavrilovbanking.service.UserService;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,13 +17,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
     private final UserService userService;
 
-    @GetMapping("/user/login")
-    public String getToken(@RequestBody LoginDTO loginDTO) throws UserNotFound, IncorrectPassword {
+    @PostMapping("/user/login")
+    public String login(@RequestBody LoginDTO loginDTO) throws UserNotFound, IncorrectPassword {
         return userService.login(loginDTO);
     }
 
     @PostMapping("/user/reg")
-    public void postMethodName(@RequestBody UserDTO userDTO) throws DuplicateUser {
+    public void reg(@RequestBody UserDTO userDTO) throws DuplicateUser {
         userService.reg(userDTO);
     }
     
